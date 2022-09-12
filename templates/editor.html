@@ -2,4 +2,14 @@
 {% include "base.html" %}
 {% block base_head %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/editor.css'%}">
+<script src="{% static 'js/editor.js' %}"></script>
+{% endblock %}
+{% block base_body %}
+<div class="sidebar" id="sidebar">
+    <header>
+        <h2>Directory</h2>
+    </header>
+    <ul class="dir-list">
+    </ul>
+</div>
 {% endblock %}

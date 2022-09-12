@@ -1,0 +1,44 @@
+
+.sidebar {
+    height: 100%;
+    width: 350px;
+    border-right: 1px solid #E2E2E2;
+}
+.sidebar header {
+    display: flex;
+    height: 70px;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 1px solid #E2E2E2;
+}
+.sidebar header h2 {
+    font-size: 25px;
+    font-weight: normal;
+    letter-spacing: 1px;
+}
+.sidebar .dir-list .file-display {
+    display: flex;
+    height: 45px;
+    padding: 0 15px;
+    align-items: center;
+}
+.sidebar .dir-list .file-display:hover {
+    background-color: #F0F0F0;
+}
+.sidebar .dir-list .file-display i {
+    margin-right: 15px;
+}
+.sidebar .dir-list .file-display span {
+    display: inline-block;
+    flex-grow: 1;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.sidebar .dir-list .folder-list {
+    height: 0px;
+    overflow: hidden;
+}
+.sidebar .dir-list [data-type="folder"].open > .folder-list {
+    height: auto;
+}
