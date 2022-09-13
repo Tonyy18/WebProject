@@ -5,6 +5,15 @@ function extractExtension(name) {
     let split = name.split(".")
     return split[split.length - 1];
 }
+
+function onFileContextmenu(dom) {
+    console.log("FILE")
+}
+
+function onFolderContextmenu(dom) {
+    console.log("FOLDER")
+}
+
 function createDirectoryDom(name, folder = false, subdirCount = 0) {
     const icons = {
         "html": "fa-brands fa-html5",
@@ -15,7 +24,6 @@ function createDirectoryDom(name, folder = false, subdirCount = 0) {
     }
     const extension = extractExtension(name.toLowerCase());
     const type = folder ? "folder" : "file";
-    console.log(type)
     let icon = icons["code"];
     if(folder) {
         icon = icons["folder"];
@@ -78,7 +86,6 @@ $(function() {
         }
     })
 
-    
     function displayDirectory(dir, dom = $("#sidebar .dir-list"), subdirCount = 0, subdir = false) {
         if(subdir) {
             subdirCount++;
@@ -97,5 +104,15 @@ $(function() {
     }
 
     displayDirectory(directory);
+
+    sidebar.on("contextmenu", ".file", function(e) {
+        const target = $(e.target);
+        if(target.parent().attr("data-type") == "folder") {
+            onFolderContextmenu(target.parent());
+        } else if (target.parent().attr("data-type") == "file") {
+            onFileContextmenu(target.parent());
+        }
+        return false;
+    })
 
 })

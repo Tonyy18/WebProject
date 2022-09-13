@@ -16,6 +16,9 @@
     font-weight: normal;
     letter-spacing: 1px;
 }
+.sidebar .dir-list {
+    height: calc(100% - 70px);
+}
 .sidebar .dir-list .file-display {
     display: flex;
     height: 45px;
@@ -34,6 +37,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    cursor: default;
 }
 .sidebar .dir-list .folder-list {
     height: 0px;
