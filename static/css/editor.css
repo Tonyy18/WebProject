@@ -28,9 +28,13 @@
 .sidebar .dir-list .file-display:hover {
     background-color: #F0F0F0;
 }
-.sidebar .dir-list .file-display i {
+.sidebar .dir-list .file-display .icon {
+    width: 15px;
+    display: flex;
+    justify-content: center;
     margin-right: 15px;
 }
+
 .sidebar .dir-list .file-display span {
     display: inline-block;
     flex-grow: 1;
@@ -45,4 +49,30 @@
 }
 .sidebar .dir-list [data-type="folder"].open > .folder-list {
     height: auto;
+}
+.contextmenu {
+    position: absolute;
+    width: 200px;
+    background-color: white;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.2);
+    border-radius: 5px;
+    display: none;
+}
+.contextmenu ul {
+    padding: 10px 0;
+}
+.contextmenu ul li {
+    padding: 7px 10px;
+    display: flex;
+    align-items: center;
+    cursor: default;
+}
+.contextmenu ul li:hover {
+    background-color: #FAFAFA;
+}
+.contextmenu ul li .icon {
+    width: 15px;
+    display: flex;
+    justify-content: center;
+    margin-right: 10px;
 }

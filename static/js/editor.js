@@ -1,10 +1,3 @@
-function extractExtension(name) {
-    if(name.split("").indexOf(".") == -1) {
-        return "";
-    }
-    let split = name.split(".")
-    return split[split.length - 1];
-}
 
 function onFileContextmenu(dom) {
     console.log("FILE")
@@ -39,7 +32,7 @@ function createDirectoryDom(name, folder = false, subdirCount = 0) {
             "padding-left": folderIndentation
         })
     }
-    display.append("<i class='" + icon + "'></i>")
+    display.append("<div class='icon'><i class='" + icon + "'></i></div>")
     display.append("<span>" + name + "</span>")
     parent.append(display);
     if(folder) {
@@ -50,6 +43,21 @@ function createDirectoryDom(name, folder = false, subdirCount = 0) {
 } 
 
 $(function() {
+    const contextmenu = new ContextMenu({
+        "Add folder": {
+            "icon": "fa-solid fa-folder",
+            "callback": onFolderContextmenu
+        },
+        "Add file": {
+            "icon": "fa-solid fa-folder",
+            "callback": onFileContextmenu
+        }
+    }, $("#sidebar"));
+    contextmenu.on("#sidebar .file-display", (el) => {
+        const parent = $(el).closest("li");
+        const type = parent.attr("data-type");
+        console.log(type)
+    })
     const sidebar = $("#sidebar");
     const directory = {
         "index.html": "html",
@@ -72,16 +80,16 @@ $(function() {
     $("#sidebar").on("click", ".file-display",function() {
         if($(this).parent().attr("data-type") == "folder") {
             $(this).parent().toggleClass("open")
-            $(this).children("i").remove();
+            $(this).find("i").remove();
             if($(this).parent().hasClass("open")) {
-                $(this).prepend('<i class="fa-regular fa-folder"></i>')
+                $(this).children(".icon").append('<i class="fa-regular fa-folder"></i>')
             } else {
-                $(this).prepend('<i class="fa-solid fa-folder"></i>')
+                $(this).children(".icon").append('<i class="fa-solid fa-folder"></i>')
                 //Close all children folders
                 const childs = $(this).parent().find(".folder");
                 childs.removeClass("open")
-                childs.children(".file-display").children("i").remove();
-                childs.children(".file-display").prepend('<i class="fa-solid fa-folder"></i>')
+                childs.children(".file-display").find("i").remove();
+                childs.children(".file-display").children(".icon").append('<i class="fa-solid fa-folder"></i>')
             }
         }
     })
@@ -104,15 +112,5 @@ $(function() {
     }
 
     displayDirectory(directory);
-
-    sidebar.on("contextmenu", ".file", function(e) {
-        const target = $(e.target);
-        if(target.parent().attr("data-type") == "folder") {
-            onFolderContextmenu(target.parent());
-        } else if (target.parent().attr("data-type") == "file") {
-            onFileContextmenu(target.parent());
-        }
-        return false;
-    })
 
 })
