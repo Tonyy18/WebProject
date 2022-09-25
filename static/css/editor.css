@@ -18,6 +18,7 @@
 }
 .sidebar .dir-list {
     height: calc(100% - 70px);
+    padding: 10px 0;
 }
 .sidebar .dir-list .file-display {
     display: flex;

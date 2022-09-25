@@ -6,7 +6,7 @@ function getRandomInt(min, max) {
 
 class Icons {
     static solidFolder = "fa-solid fa-folder"
-    static solidPed = "fa-solid fa-pen"
+    static solidPen = "fa-solid fa-pen"
     static solidTrash = "fa-solid fa-trash"
     static regularCode = "fa-regular fa-file-code"
     static html = "fa-brands fa-html5"
@@ -38,12 +38,19 @@ function ContextMenu(struct, container) {
         }
         return el
     }
-    this.append = (struct) => {
-        this.addons = struct;
+    this.appendItem = (struct, append=true) => {
+        this.addons = Object.assign(this.addons,struct);
         for(key in struct) {
             const item = getItem(key, struct[key], true);
-            $(this.dom).find("ul").append(item);
+            if(append) {
+                $(this.dom).find("ul").append(item);
+            } else {
+                $(this.dom).find("ul").prepend(item);
+            }
         }
+    }
+    this.prependItem = (struct) => {
+        this.appendItem(struct, false);
     }
     this.clear = () => {
         $(this.dom).children("ul").children("li[data-addon='true']").remove();

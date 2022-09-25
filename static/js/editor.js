@@ -39,20 +39,24 @@ $(function() {
     const contextmenu = new ContextMenu({
         "Rename": {
             "icon": Icons.solidPen,
-            "callback": function() {};
+            "callback": function() {}
         },
         "Delete": {
             "icon": Icons.solidTrash,
-            "callback": onFileContextmenu
+            "callback": function() {}
         }
     }, $("#sidebar"));
     contextmenu.on("#sidebar .file-display", (el) => {
         contextmenu.clear();
     })
     contextmenu.on("#sidebar [data-type='folder']", (el) => {
-        contextmenu.appendItem({
+        contextmenu.prependItem({
             "Add folder": {
-                "icon": "fa-solid fa-folder",
+                "icon": Icons.solidFolder,
+                "callback": function() { console.log("Addon 1") }
+            },
+            "Add file": {
+                "icon": Icons.regularCode,
                 "callback": function() { console.log("Addon 1") }
             }
         })
