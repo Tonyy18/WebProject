@@ -8,20 +8,13 @@ function onFolderContextmenu(dom) {
 }
 
 function createDirectoryDom(name, folder = false, subdirCount = 0) {
-    const icons = {
-        "html": "fa-brands fa-html5",
-        "css": "fa-brands fa-css3",
-        "js": "fa-brands fa-square-js",
-        "folder": "fa-solid fa-folder",
-        "code": "fa-regular fa-file-code"
-    }
     const extension = extractExtension(name.toLowerCase());
     const type = folder ? "folder" : "file";
-    let icon = icons["code"];
+    let icon = Icons.regularCode;
     if(folder) {
-        icon = icons["folder"];
-    } else if(extension in icons) {
-        icon = icons[extension];
+        icon = Icons.solidFolder;
+    } else if(Icons.hasOwnProperty(extension)) {
+        icon = Icons[extension];
     }
     const paddingLeft = 20;
     const folderIndentation = paddingLeft + 15 * subdirCount
@@ -44,19 +37,25 @@ function createDirectoryDom(name, folder = false, subdirCount = 0) {
 
 $(function() {
     const contextmenu = new ContextMenu({
-        "Add folder": {
-            "icon": "fa-solid fa-folder",
-            "callback": onFolderContextmenu
+        "Rename": {
+            "icon": Icons.solidPen,
+            "callback": function() {};
         },
-        "Add file": {
-            "icon": "fa-solid fa-folder",
+        "Delete": {
+            "icon": Icons.solidTrash,
             "callback": onFileContextmenu
         }
     }, $("#sidebar"));
     contextmenu.on("#sidebar .file-display", (el) => {
-        const parent = $(el).closest("li");
-        const type = parent.attr("data-type");
-        console.log(type)
+        contextmenu.clear();
+    })
+    contextmenu.on("#sidebar [data-type='folder']", (el) => {
+        contextmenu.appendItem({
+            "Add folder": {
+                "icon": "fa-solid fa-folder",
+                "callback": function() { console.log("Addon 1") }
+            }
+        })
     })
     const sidebar = $("#sidebar");
     const directory = {
@@ -77,7 +76,7 @@ $(function() {
         },
         "requirements.txt": "django"
     }
-    $("#sidebar").on("click", ".file-display",function() {
+    sidebar.on("click", ".file-display",function() {
         if($(this).parent().attr("data-type") == "folder") {
             $(this).parent().toggleClass("open")
             $(this).find("i").remove();

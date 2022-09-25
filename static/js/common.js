@@ -4,6 +4,16 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+class Icons {
+    static solidFolder = "fa-solid fa-folder"
+    static solidPed = "fa-solid fa-pen"
+    static solidTrash = "fa-solid fa-trash"
+    static regularCode = "fa-regular fa-file-code"
+    static html = "fa-brands fa-html5"
+    static css = "fa-brands fa-css3"
+    static js = "fa-brands fa-square-js"
+}
+
 function extractExtension(name) {
     if(name.split("").indexOf(".") == -1) {
         return "";
@@ -14,6 +24,7 @@ function extractExtension(name) {
 
 function ContextMenu(struct, container) {
     this.structure = struct;
+    this.addons = {};
     this.container = container;
     this.id = getRandomInt(0, 100);
     this.callbacks = [];
@@ -23,9 +34,23 @@ function ContextMenu(struct, container) {
         el.append(icon)
         el.append("<span>" + key + "</span>");
         if(addon) {
-            el.attr("data-addon='true'");
+            el.attr("data-addon", "true");
         }
         return el
+    }
+    this.append = (struct) => {
+        this.addons = struct;
+        for(key in struct) {
+            const item = getItem(key, struct[key], true);
+            $(this.dom).find("ul").append(item);
+        }
+    }
+    this.clear = () => {
+        $(this.dom).children("ul").children("li[data-addon='true']").remove();
+        this.addons = {};
+    }
+    this.on = (query, struct) => {
+        this.callbacks[query] = struct;
     }
     this.build = () => {
         const dom = $("<div class='contextmenu' id='menu-" + this.id + "'></div>")
@@ -52,7 +77,11 @@ function ContextMenu(struct, container) {
             }
         })
         $(this.dom).on("click", "li", function() {
-            _this.structure[$(this).attr("data-key")]["callback"]();
+            let callbackLoc = _this.structure
+            if($(this).attr("data-addon") == "true") {
+                callbackLoc = _this.addons;
+            }
+            callbackLoc[$(this).attr("data-key")]["callback"]();
             _this.hide();
         })
         $(this.container).contextmenu(function(e) {
@@ -60,10 +89,10 @@ function ContextMenu(struct, container) {
             const dom = _this.dom;
             const x = e.clientX;
             const y = e.clientY;
-            for(key in _this.callbacks) {
-                const callback = _this.callbacks[key];
-                if($(key).is(e.target) || $(key).has(e.target).length > 0) {
-                    callback($(e.target));
+            for(let a = 0; a < _this.callbacks.length; a++) {
+                let el = _this.callbacks[a];
+                if($(el[0]).is(e.target) || $(el[0]).has(e.target).length > 0) {
+                    el[1]($(e.target));
                 }
             }
             dom.css({
@@ -75,8 +104,7 @@ function ContextMenu(struct, container) {
         })
     }
     this.on = (el, callback) => {
-        console.log(el)
-        this.callbacks[el] = callback
+        this.callbacks.push([el, callback])
     }
     this.dom = this.build()
     this.attach();
