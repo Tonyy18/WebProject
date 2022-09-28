@@ -28,6 +28,7 @@ function ContextMenu(struct, container) {
     this.container = container;
     this.id = getRandomInt(0, 100);
     this.callbacks = [];
+    this.events = {}
     const getItem = (key, content, addon = false) => {
         const el = $("<li data-key='" + key + "'></li>")
         const icon = $("<div class='icon'><i class='" + content["icon"] + "'></i></div>")
@@ -56,9 +57,6 @@ function ContextMenu(struct, container) {
         $(this.dom).children("ul").children("li[data-addon='true']").remove();
         this.addons = {};
     }
-    this.on = (query, struct) => {
-        this.callbacks[query] = struct;
-    }
     this.build = () => {
         const dom = $("<div class='contextmenu' id='menu-" + this.id + "'></div>")
         const list = $("<ul></ul>")
@@ -73,6 +71,7 @@ function ContextMenu(struct, container) {
     }
     this.hide = () => {
         this.dom.hide();
+        this.clear();
     }
     this.attach = () => {
         $("#" + this.id).remove();
@@ -81,15 +80,17 @@ function ContextMenu(struct, container) {
         $(document).mousedown(function(e) {
             if(e.which == 1 && !_this.dom.is(e.target) && $(_this.dom).has(e.target).length === 0) {
                 _this.hide();
+                callEvent(e, "close");
             }
         })
-        $(this.dom).on("click", "li", function() {
+        $(this.dom).on("click", "li", function(e) {
             let callbackLoc = _this.structure
             if($(this).attr("data-addon") == "true") {
                 callbackLoc = _this.addons;
             }
             callbackLoc[$(this).attr("data-key")]["callback"]();
             _this.hide();
+            callEvent(e, "itemClick");
         })
         $(this.container).contextmenu(function(e) {
             _this.hide();
@@ -98,8 +99,17 @@ function ContextMenu(struct, container) {
             const y = e.clientY;
             for(let a = 0; a < _this.callbacks.length; a++) {
                 let el = _this.callbacks[a];
-                if($(el[0]).is(e.target) || $(el[0]).has(e.target).length > 0) {
-                    el[1]($(e.target));
+                let validElement;
+                if(el[2] == true) {
+                    validElement = $(el[0]).has(e.target).length > 0;
+                } else {
+                    validElement = $(el[0]).has(e.target).length == 0
+                }
+                if($(el[0]).is(e.target) || validElement) {
+                    const result = el[1]($(e.target));
+                    if(result === false) {
+                        break;
+                    }
                 }
             }
             dom.css({
@@ -107,11 +117,20 @@ function ContextMenu(struct, container) {
                 "top": y + "px"
             })
             _this.show();
+            callEvent(e, "show");
             return false;
         })
     }
-    this.on = (el, callback) => {
-        this.callbacks.push([el, callback])
+    this.onElement = (el, callback, children = true) => {
+        this.callbacks.push([el, callback, children])
+    }
+    const callEvent = (e, name) => {
+        if(name in this.events && typeof this.events[name] == "function") {
+            this.events[name](e);
+        }
+    }
+    this.on = (name, callback) => {
+        this.events[name] = callback
     }
     this.dom = this.build()
     this.attach();

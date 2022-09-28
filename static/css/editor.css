@@ -26,7 +26,11 @@
     padding: 0 15px;
     align-items: center;
 }
-.sidebar .dir-list .file-display:hover {
+.sidebar .dir-list li.error > .file-display {
+    border: 1px solid red;
+}
+.sidebar .dir-list .file-display:hover,
+.sidebar .dir-list li.active .file-display {
     background-color: #F0F0F0;
 }
 .sidebar .dir-list .file-display .icon {
@@ -35,7 +39,6 @@
     justify-content: center;
     margin-right: 15px;
 }
-
 .sidebar .dir-list .file-display span {
     display: inline-block;
     flex-grow: 1;
@@ -43,6 +46,20 @@
     overflow: hidden;
     white-space: nowrap;
     cursor: default;
+}
+.sidebar .dir-list .file-display form {
+    display: inline-block;
+    flex-grow: 1;
+}
+.sidebar .dir-list .file-display form input {
+    width: 100%;
+    background-color: transparent;
+    padding: 3px 0px;
+    border: 1px solid transparent;
+    outline: none;
+}
+.sidebar .dir-list .file-display form input:focus {
+    border-bottom: 1px solid #04A4FF;
 }
 .sidebar .dir-list .folder-list {
     height: 0px;
